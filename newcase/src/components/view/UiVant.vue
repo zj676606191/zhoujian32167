@@ -65,6 +65,12 @@
   <div>
     微信登陆
   </div>
+  <div>
+        <van-cell title="选择单个日期" :value="date" @click="show = true" />
+        <van-calendar v-model="show" @confirm="onConfirm" />
+  </div>
+  <!-- 遍历测试 -->
+  <div v-for="(item,index) in list">{{item.typeName}}<img :src="item.icon"></div>
 </div>
 </template>
 
@@ -74,9 +80,12 @@ export default {
   name: "UiVant111111",
   data() {
     return {
-     show:false,
-     visible:false,
+      show:false,
+      visible:false,
       fileList: [],
+      date: '',
+      show: false,
+      list:[],
     };
   },
   created () {
@@ -120,8 +129,10 @@ export default {
     },
     getApiRun(){
          findByMiniMechanismTypeSize({pageSize:5}).then(res => {
-        if (res.data.status === 0) {
-            console.log(res)
+        if (res.data.code === 0) {
+             this.list = res.data.data
+            //  动态样式确认
+             this.visible= true
         }
       })
     },
@@ -142,6 +153,14 @@ export default {
       if(r!=null) return unescape(r[2])
       return null
     },
+    formatDate(date) {
+          return `${date.getMonth() + 1}/${date.getDate()}`;
+      },
+      onConfirm(date) {
+          this.show = false;
+          this.date = this.formatDate(date);
+          return false
+      },
   },
 };
 </script>
